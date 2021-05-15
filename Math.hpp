@@ -243,7 +243,8 @@ public:
     }
 
     Scale(Vector3 scalars)
-        : scalars{ scalars }
+        : scalars{ scalars },
+          normalScalars{ scalars.y * scalars.z, scalars.x * scalars.z, scalars.x * scalars.y }
     {
     }
 
@@ -255,11 +256,12 @@ public:
 
     Vector3 applyNormal(Vector3 n) const override
     {
-        n.mul(Vector3{ scalars.y * scalars.z, scalars.x * scalars.z, scalars.x * scalars.y });
+        n.mul(normalScalars);
         return n;
     }
 private:
 	Vector3 scalars;
+	Vector3 normalScalars;
 };
 
 class Rotate : public Transform
