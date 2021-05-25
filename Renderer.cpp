@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "Renderer.hpp"
 
 Renderer::Renderer(Raster* image)
@@ -22,7 +24,7 @@ void Renderer::clearColorDepth(Color color)
 	clearDepth();
 }
 
-void Renderer::renderMesh(const Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting)
+void Renderer::renderMesh(Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting)
 {
 	const std::vector<Vertex>& vertices = mesh.getVertices();
 	const std::vector<Triangle>& triangles = mesh.getTriangles();

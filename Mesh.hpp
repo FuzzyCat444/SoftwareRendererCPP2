@@ -56,9 +56,9 @@ public:
 
 	void invertNormals();
 
-	const std::vector<Vertex>& getVertices() const;
-	const std::vector<Triangle>& getTriangles() const;
-	const std::vector<Vector3>& getFaceNormals() const;
+	std::vector<Vertex>& getVertices();
+	std::vector<Triangle>& getTriangles();
+	std::vector<Vector3>& getFaceNormals();
 
 	static Mesh loadFromFile(std::string objFile, Shading shading);
 	static Mesh generateUVSphere(int rings, int segments, Shading shading);

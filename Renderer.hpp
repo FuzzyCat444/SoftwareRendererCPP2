@@ -26,7 +26,7 @@ public:
 	    NONE, DIFFUSE
 	};
 
-	void renderMesh(const Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting);
+	void renderMesh(Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting);
 private:
 	Raster* image;
 	std::vector<double> depth;

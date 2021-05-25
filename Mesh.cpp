@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "Mesh.hpp"
 
 Vertex::Vertex()
@@ -60,17 +62,17 @@ void Mesh::invertNormals()
         faceNormals.at(i).scl(-1.0);
 }
 
-const std::vector<Vertex>& Mesh::getVertices() const
+std::vector<Vertex>& Mesh::getVertices()
 {
 	return vertices;
 }
 
-const std::vector<Triangle>& Mesh::getTriangles() const
+std::vector<Triangle>& Mesh::getTriangles()
 {
 	return triangles;
 }
 
-const std::vector<Vector3>& Mesh::getFaceNormals() const
+std::vector<Vector3>& Mesh::getFaceNormals()
 {
 	return faceNormals;
 }
