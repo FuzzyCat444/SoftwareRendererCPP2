@@ -1,5 +1,3 @@
-#include "pch.h"
-
 #include "Renderer.hpp"
 
 Renderer::Renderer(Raster* image)

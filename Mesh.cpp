@@ -1,5 +1,3 @@
-#include "pch.h"
-
 #include "Mesh.hpp"
 
 Vertex::Vertex()
@@ -79,6 +77,7 @@ std::vector<Vector3>& Mesh::getFaceNormals()
 
 void Mesh::computeNormals(Shading shading)
 {
+    faceNormals.clear();
     for (int i = 0; i < triangles.size(); i++)
     {
         Triangle tri = triangles.at(i);

@@ -55,6 +55,7 @@ public:
 	Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles, Shading shading);
 
 	void invertNormals();
+	void computeNormals(Shading shading);
 
 	std::vector<Vertex>& getVertices();
 	std::vector<Triangle>& getTriangles();
@@ -63,7 +64,6 @@ public:
 	static Mesh loadFromFile(std::string objFile, Shading shading);
 	static Mesh generateUVSphere(int rings, int segments, Shading shading);
 private:
-	void computeNormals(Shading shading);
 
 	std::vector<Vertex> vertices;
 	std::vector<Triangle> triangles;
