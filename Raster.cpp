@@ -14,18 +14,12 @@ Raster::Raster(int width, int height, Color color)
 	: width{ width }, height{ height }
 {
 	data.resize(4 * width * height);
-	clear(color);
+	clear();
 }
 
-void Raster::clear(Color color)
+void Raster::clear()
 {
-	for (int i = 0; i < data.size(); i += 4)
-	{
-		data.at(i + 0) = color.r;
-		data.at(i + 1) = color.g;
-		data.at(i + 2) = color.b;
-		data.at(i + 3) = color.a;
-	}
+	memset(&data.at(0), 0, width*height*4*sizeof(uint8_t));
 }
 
 void Raster::loadFromBuffer(const uint8_t* buffer)

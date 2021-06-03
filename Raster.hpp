@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 
+#include <cstring>
+
 struct Color
 {
     Color() : Color{ 0, 0, 0, 255 } {}
@@ -29,22 +31,31 @@ public:
 	Raster(int width, int height);
 	Raster(int width, int height, Color color);
 
-	void clear(Color color);
+	void clear();
 
-	void setPixel(int x, int y, Color color)
+	void setPixel(int x, int y, const Color& color)
     {
         int index = getIndex(x, y);
-        data.at(index + 0) = color.r;
-        data.at(index + 1) = color.g;
-        data.at(index + 2) = color.b;
-        data.at(index + 3) = color.a;
+
+        uint8_t* pixelPtr = &data.at(index);
+        *pixelPtr = (uint8_t)color.r;
+        pixelPtr++;
+        *pixelPtr = (uint8_t)color.g;
+        pixelPtr++;
+        *pixelPtr = (uint8_t)color.b;
+        pixelPtr++;
+        *pixelPtr = (uint8_t)color.a;
     }
-	void setPixel(int index, Color color)
+	void setPixel(int index, const Color& color)
 	{
-	    data.at(index + 0) = color.r;
-	    data.at(index + 1) = color.g;
-	    data.at(index + 2) = color.b;
-	    data.at(index + 3) = color.a;
+        uint8_t* pixelPtr = &data.at(index);
+        *pixelPtr = (uint8_t)color.r;
+        pixelPtr++;
+        *pixelPtr = (uint8_t)color.g;
+        pixelPtr++;
+        *pixelPtr = (uint8_t)color.b;
+        pixelPtr++;
+        *pixelPtr = (uint8_t)color.a;
 	}
 	Color getPixel(int x, int y) const
     {
