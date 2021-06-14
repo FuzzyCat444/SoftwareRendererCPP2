@@ -288,14 +288,17 @@ public:
         switch (axis)
         {
         case Axis::X:
-            rotated.z = v.z * c - v.y * s;
-            rotated.y = v.z * s + v.y * c;
+            // Rotate Y to Z
+            rotated.y = v.y * c - v.z * s;
+            rotated.z = v.y * s + v.z * c;
             break;
         case Axis::Y:
-            rotated.x = v.x * c - v.z * s;
-            rotated.z = v.x * s + v.z * c;
+            // Rotate Z to X
+            rotated.z = v.z * c - v.x * s;
+            rotated.x = v.z * s + v.x * c;
             break;
         case Axis::Z:
+            // Rotate X to Y
             rotated.x = v.x * c - v.y * s;
             rotated.y = v.x * s + v.y * c;
             break;
