@@ -6,9 +6,9 @@ Renderer::Renderer(Raster* image)
 	clearDepth();
 }
 
-void Renderer::clearColor(Color color)
+void Renderer::clearColor(Color color) //clears to black
 {
-	image->clear(color);
+	image->clear();
 }
 
 void Renderer::clearDepth()
