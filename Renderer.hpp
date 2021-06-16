@@ -36,6 +36,8 @@ private:
 
     bool testDepth(int index, double d)
     {
+        if (index < 0 || index >= depth.size())
+            return false;
         if (d < depth.at(index))
         {
             depth.at(index) = d;
