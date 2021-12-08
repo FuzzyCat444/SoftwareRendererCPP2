@@ -8,7 +8,7 @@ class Camera
 public:
 	Camera();
 	Camera(double fov, double aspect, double nearClip);
-	Camera(double fov, double aspect, double nearClip, Vector3 position, double yaw, double pitch);
+	Camera(double fov, double aspect, double nearClip, Vector3 position, double yaw, double pitch, double roll);
 
 	void setFov(double fov);
 	void setAspect(double aspect);
@@ -16,10 +16,12 @@ public:
 	void setPosition(Vector3 position);
 	void setYaw(double yaw);
 	void setPitch(double pitch);
+	void setRoll(double roll);
 
 	void translate(Vector3 translation);
 	void rotateYaw(double yaw);
 	void rotatePitch(double pitch);
+	void rotateRoll(double roll);
 
 	double getFov() const;
 	double getPerspective() const;
@@ -28,6 +30,7 @@ public:
 	Vector3 getPosition() const;
 	double getYaw() const;
 	double getPitch() const;
+	double getRoll() const;
 
 	const Transform& getTransform() const;
 	Vector3 getForwardVec() const;
@@ -45,10 +48,12 @@ private:
 	Vector3 position;
 	double yaw;
 	double pitch;
+	double roll;
 
-	Rotate pitchTransform;
 	Translate positionTransform;
 	Rotate yawTransform;
+	Rotate pitchTransform;
+	Rotate rollTransform;
 	Combined combinedTransform;
 };
 

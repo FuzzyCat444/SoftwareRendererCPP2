@@ -6,17 +6,18 @@ Camera::Camera()
 }
 
 Camera::Camera(double fov, double aspect, double nearClip)
-	: Camera{ fov, aspect, nearClip, { 0.0, 0.0, 0.0 }, 0.0, 0.0 }
+	: Camera{ fov, aspect, nearClip, { 0.0, 0.0, 0.0 }, 0.0, 0.0, 0.0 }
 {
 }
 
-Camera::Camera(double fov, double aspect, double nearClip, Vector3 position, double yaw, double pitch)
-	: fov{ fov }, perspective{ tan(fov / 2.0) }, aspect{ aspect }, nearClip{ nearClip }, position{ position }, yaw{ yaw }, pitch{ pitch },
-	combinedTransform{ &positionTransform, &yawTransform, &pitchTransform }
+Camera::Camera(double fov, double aspect, double nearClip, Vector3 position, double yaw, double pitch, double roll)
+	: fov{ fov }, perspective{ tan(fov / 2.0) }, aspect{ aspect }, nearClip{ nearClip }, position{ position }, yaw{ yaw }, pitch{ pitch }, roll{ roll },
+	combinedTransform{ &positionTransform, &yawTransform, &pitchTransform, &rollTransform }
 {
     setPosition(position);
     setYaw(yaw);
     setPitch(pitch);
+    setRoll(roll);
 }
 
 void Camera::setFov(double fov)
@@ -55,6 +56,12 @@ void Camera::setPitch(double pitch)
 	pitchTransform = Rotate{ Rotate::Axis::X, -pitch };
 }
 
+void Camera::setRoll(double roll)
+{
+    this->roll = roll;
+    rollTransform = Rotate{ Rotate::Axis::Z, -roll };
+}
+
 void Camera::translate(Vector3 translation)
 {
 	position.add(translation);
@@ -74,6 +81,12 @@ void Camera::rotatePitch(double pitch)
 	this->pitch += pitch;
 	limitPitch();
 	pitchTransform = Rotate{ Rotate::Axis::X, -this->pitch };
+}
+
+void Camera::rotateRoll(double roll)
+{
+    this->roll += roll;
+    rollTransform = Rotate{ Rotate::Axis::Z, -this->roll };
 }
 
 double Camera::getFov() const
@@ -111,6 +124,11 @@ double Camera::getPitch() const
 	return pitch;
 }
 
+double Camera::getRoll() const
+{
+    return roll;
+}
+
 const Transform& Camera::getTransform() const
 {
 	return combinedTransform;
@@ -118,9 +136,10 @@ const Transform& Camera::getTransform() const
 
 Vector3 Camera::getForwardVec() const
 {
+	Rotate rollTransform{ Rotate::Axis::Z, roll };
 	Rotate pitchTransform{ Rotate::Axis::X, pitch };
 	Rotate yawTransform{ Rotate::Axis::Y, yaw };
-	return yawTransform.apply(pitchTransform.apply(Vector3{ 0.0, 0.0, -1.0 }));
+	return yawTransform.apply(pitchTransform.apply(rollTransform.apply(Vector3{ 0.0, 0.0, -1.0 })));
 }
 
 Vector3 Camera::getRightVec() const

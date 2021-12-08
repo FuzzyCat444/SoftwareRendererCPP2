@@ -27,6 +27,8 @@ public:
 	};
 
 	void renderMesh(Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting);
+
+	void fogPostProcess(double fogStart, double fogEnd, Color fogColor);
 private:
 	Raster* image;
 	std::vector<double> depth;

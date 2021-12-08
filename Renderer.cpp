@@ -22,6 +22,24 @@ void Renderer::clearColorDepth(Color color)
 	clearDepth();
 }
 
+void Renderer::fogPostProcess(double fogStart, double fogEnd, Color fogColor)
+{
+    int pixelIndex = 0;
+    for (int i = 0; i < depth.size(); i++)
+    {
+        double d = depth.at(i);
+        double fogAmount = (d - fogStart) / (fogEnd - fogStart);
+        fogAmount = fogAmount > 1.0 ? 1.0 : fogAmount < 0.0 ? 0.0 : fogAmount;
+        double keptAmount = 1.0 - fogAmount;
+        Color pixel = image->getPixel(pixelIndex);
+        pixel.r = (int) (pixel.r * keptAmount + fogColor.r * fogAmount);
+        pixel.g = (int) (pixel.g * keptAmount + fogColor.g * fogAmount);
+        pixel.b = (int) (pixel.b * keptAmount + fogColor.b * fogAmount);
+        image->setPixel(pixelIndex, pixel);
+        pixelIndex += 4;
+    }
+}
+
 void Renderer::renderMesh(Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting)
 {
 	const std::vector<Vertex>& vertices = mesh.getVertices();
@@ -324,7 +342,7 @@ Renderer::EdgeClip Renderer::clipEdge(Vertex v0, Vertex v1, ClipPlane plane, con
 		lin = LinearInterpolate{ v0, v1, t, 0.0 };
 
 		return EdgeClip{ EdgeClip::ClipResult::CLIPPED, lin.value };
-};
+    };
 
 	switch (plane)
 	{
