@@ -4,6 +4,7 @@ Renderer::Renderer(Raster* image)
 	: image{ image }
 {
 	clearDepth();
+	enableDepthTest(true);
 }
 
 void Renderer::clearColor(Color color)
@@ -38,6 +39,11 @@ void Renderer::fogPostProcess(double fogStart, double fogEnd, Color fogColor)
         image->setPixel(pixelIndex, pixel);
         pixelIndex += 4;
     }
+}
+
+void Renderer::enableDepthTest(bool enable)
+{
+    depthTestEnabled = enable;
 }
 
 void Renderer::renderMesh(Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting)

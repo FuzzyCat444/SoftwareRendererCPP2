@@ -26,12 +26,15 @@ public:
 	    NONE, DIFFUSE
 	};
 
-	void renderMesh(Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting);
-
 	void fogPostProcess(double fogStart, double fogEnd, Color fogColor);
+
+	void enableDepthTest(bool enable);
+
+	void renderMesh(Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting);
 private:
 	Raster* image;
 	std::vector<double> depth;
+	bool depthTestEnabled;
 
 	std::vector<Vertex> verticesCopy;
 	std::vector<bool> renderFace;
@@ -40,7 +43,7 @@ private:
     {
         if (index < 0 || index >= depth.size())
             return false;
-        if (d < depth.at(index))
+        if (d < depth.at(index) || !depthTestEnabled)
         {
             depth.at(index) = d;
             return true;
