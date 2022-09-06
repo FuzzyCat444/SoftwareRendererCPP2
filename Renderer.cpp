@@ -112,16 +112,27 @@ void Renderer::renderMesh(Mesh& mesh, const Raster& texture, const Transform& tr
 	}
 
 	// Backface culling
-	for (int i = 0; i < triangles.size(); i++)
-	{
-		Vector3 p0 = verticesCopy.at(triangles.at(i).v0).xyz;
-		Vector3 view = camera.getPosition();
-		Vector3 diff = view;
-		diff.sub(p0);
-		Vector3 normal = transform.applyNormal(faceNormals.at(i));
-		normal.norm();
-		renderFace.at(i) = diff.dot(normal) > 0.0;
-	}
+    if (camera.getOrthographic())
+    {
+        for (int i = 0; i < triangles.size(); i++)
+        {
+            Vector3 camDir = camera.getForwardVec();
+            Vector3 normal = transform.applyNormal(faceNormals.at(i));
+            renderFace.at(i) = camDir.dot(normal) < 0.0;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < triangles.size(); i++)
+        {
+            Vector3 p0 = verticesCopy.at(triangles.at(i).v0).xyz;
+            Vector3 view = camera.getPosition();
+            Vector3 diff = p0;
+            diff.sub(view);
+            Vector3 normal = transform.applyNormal(faceNormals.at(i));
+            renderFace.at(i) = diff.dot(normal) < 0.0;
+        }
+    }
 
 	// View transform
 	for (int i = 0; i < vertices.size(); i++)

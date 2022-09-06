@@ -6,9 +6,7 @@
 class Camera
 {
 public:
-	Camera();
-	Camera(double fov, double aspect, double nearClip);
-	Camera(double fov, double aspect, double nearClip, Vector3 position, double yaw, double pitch, double roll);
+	Camera(bool orthographic = false, double fov = 0.0, double aspect = 0.0, double nearClip = 0.0, Vector3 position = Vector3{ 0.0, 0.0, 0.0 }, double yaw = 0.0, double pitch = 0.0, double roll = 0.0);
 
     void setOrthographic(bool orthographic);
 	void setFov(double fov);

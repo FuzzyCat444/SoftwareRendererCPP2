@@ -1,20 +1,10 @@
 #include "Camera.hpp"
 
-Camera::Camera()
-	: Camera{ radians(90.0), 1.0, 0.1 }
-{
-}
-
-Camera::Camera(double fov, double aspect = 1.0, double nearClip = 0.0)
-	: Camera{ fov, aspect, nearClip, { 0.0, 0.0, 0.0 }, 0.0, 0.0, 0.0 }
-{
-}
-
-Camera::Camera(double fov, double aspect, double nearClip, Vector3 position, double yaw = 0.0, double pitch = 0.0, double roll = 0.0)
+Camera::Camera(bool orthographic, double fov, double aspect, double nearClip, Vector3 position, double yaw, double pitch, double roll)
 	: fov{ fov }, perspective{ tan(fov / 2.0) }, aspect{ aspect }, nearClip{ nearClip }, position{ position }, yaw{ yaw }, pitch{ pitch }, roll{ roll },
 	combinedTransform{ &positionTransform, &yawTransform, &pitchTransform, &rollTransform }
 {
-    setOrthographic(false);
+    setOrthographic(orthographic);
     setPosition(position);
     setYaw(yaw);
     setPitch(pitch);
