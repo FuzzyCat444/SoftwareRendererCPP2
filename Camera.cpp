@@ -14,10 +14,21 @@ Camera::Camera(double fov, double aspect, double nearClip, Vector3 position, dou
 	: fov{ fov }, perspective{ tan(fov / 2.0) }, aspect{ aspect }, nearClip{ nearClip }, position{ position }, yaw{ yaw }, pitch{ pitch }, roll{ roll },
 	combinedTransform{ &positionTransform, &yawTransform, &pitchTransform, &rollTransform }
 {
+    setOrthographic(false);
     setPosition(position);
     setYaw(yaw);
     setPitch(pitch);
     setRoll(roll);
+}
+
+void Camera::setOrthographic(bool orthographic)
+{
+    this->orthographic = orthographic;
+}
+
+bool Camera::getOrthographic() const
+{
+    return orthographic;
 }
 
 void Camera::setFov(double fov)

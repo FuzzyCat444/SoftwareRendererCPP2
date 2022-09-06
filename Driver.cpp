@@ -32,7 +32,7 @@ void Driver::start()
     image.loadFromFile("bricks.jpg");
     bricksTex.loadFromBuffer(image.getPixelsPtr());
 
-    Camera camera{ radians(90.0), width / (double) height, 0.1, Vector3{ 0.0, 0.0, 3.0 }, 0.0, 0.0 };
+    Camera camera{ radians(90.0), width / (double) height, 0.1, Vector3{ 0.0, 0.0, 3.0 }, 0.0, 0.0, 0.0 };
 
     std::vector<LightSource> lights;
     lights.push_back(LightSource{ AmbientLight{ Vector3{ 0.4, 0.4, 0.5 } } });
@@ -166,8 +166,8 @@ void Driver::start()
             camera.translate(moveVec);
         }
         double camRotSpeed = 0.5;
-        camera.rotateYaw(camRotSpeed * dmx * 0.016);
-        camera.rotatePitch(camRotSpeed * dmy * 0.016);
+        camera.rotateYaw(camRotSpeed * -dmx * 0.016);
+        camera.rotatePitch(camRotSpeed * -dmy * 0.016);
 
         renderer.clearColorDepth(Color{ 0, 0, 0, 255 });
 

@@ -10,6 +10,7 @@ public:
 	Camera(double fov, double aspect, double nearClip);
 	Camera(double fov, double aspect, double nearClip, Vector3 position, double yaw, double pitch, double roll);
 
+    void setOrthographic(bool orthographic);
 	void setFov(double fov);
 	void setAspect(double aspect);
 	void setNearClip(double nearClip);
@@ -23,6 +24,7 @@ public:
 	void rotatePitch(double pitch);
 	void rotateRoll(double roll);
 
+    bool getOrthographic() const;
 	double getFov() const;
 	double getPerspective() const;
 	double getAspect() const;
@@ -41,6 +43,7 @@ public:
 private:
     void limitPitch();
 
+    bool orthographic;
 	double fov;
 	double perspective;
 	double aspect;
