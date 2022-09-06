@@ -32,7 +32,8 @@ void Driver::start()
     image.loadFromFile("bricks.jpg");
     bricksTex.loadFromBuffer(image.getPixelsPtr());
 
-    Camera camera{ radians(90.0), width / (double) height, 0.1, Vector3{ 0.0, 0.0, 3.0 }, 0.0, 0.0, 0.0 };
+    Camera camera{ 3, width / (double) height, 0.1, Vector3{ 0.0, 0.0, 3.0 }, 0.0, 0.0, 0.0 };
+    camera.setOrthographic(true);
 
     std::vector<LightSource> lights;
     lights.push_back(LightSource{ AmbientLight{ Vector3{ 0.4, 0.4, 0.5 } } });

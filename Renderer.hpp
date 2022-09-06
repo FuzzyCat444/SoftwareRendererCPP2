@@ -133,7 +133,7 @@ private:
 		Vertex incValue;
 	};
 
-	void rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& texture);
+	void rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& texture, const Camera& camera);
 };
 
 #endif

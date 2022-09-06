@@ -130,7 +130,10 @@ void Renderer::renderMesh(Mesh& mesh, const Raster& texture, const Transform& tr
 		v.xyz = camera.getTransform().apply(v.xyz);
 		verticesCopy.at(i) = v;
 	}
-
+    
+    // Don't do near clipping for orthographic, start with left clip
+    ClipPlane startClipPlane = camera.getOrthographic() ? ClipPlane::LEFT : ClipPlane::NEAR;
+    
     // Triangle recursive clipping and rasterization
 	for (int i = 0; i < triangles.size(); i++)
 	{
@@ -140,7 +143,7 @@ void Renderer::renderMesh(Mesh& mesh, const Raster& texture, const Transform& tr
 		Vertex v2 = verticesCopy.at(tri.v2);
 
 		if (renderFace.at(i))
-			doTriangle(v0, v1, v2, ClipPlane::NEAR, texture, camera);
+			doTriangle(v0, v1, v2, startClipPlane, texture, camera);
 	}
 }
 
@@ -183,7 +186,7 @@ void Renderer::doTriangle(Vertex v0, Vertex v1, Vertex v2, ClipPlane plane, cons
 {
 	ClipPlane nextPlane = nextClipPlane(plane);
 	if (plane == ClipPlane::NONE)
-		rasterizeTriangle(v0, v1, v2, texture);
+		rasterizeTriangle(v0, v1, v2, texture, camera);
 	else
 	{
 		if (plane == ClipPlane::LEFT)
@@ -213,18 +216,30 @@ void Renderer::doTriangle(Vertex v0, Vertex v1, Vertex v2, ClipPlane plane, cons
 
 Vertex Renderer::applyPerspective(Vertex v, const Raster& texture, const Camera& camera)
 {
-	double oneOverZ = 1.0 / (camera.getPerspective() * -v.xyz.z);
-	v.xyz.x *= oneOverZ;
-	v.xyz.y *= oneOverZ * camera.getAspect();
-	v.xyz.z = oneOverZ;
-	v.rgb.scl(oneOverZ);
-	v.uv.y = 1.0 - v.uv.y;
-	v.uv.mul(Vector2{ (double) texture.getWidth(), (double) texture.getHeight() });
-	v.uv.scl(oneOverZ);
+    if (camera.getOrthographic())
+    {
+        v.xyz.x *= 1.0f / camera.getFov();
+        v.xyz.y *= camera.getAspect() / camera.getFov();
+        v.xyz.z = -v.xyz.z;
+        v.uv.y = 1.0 - v.uv.y;
+        v.uv.mul(Vector2{ (double) texture.getWidth(), (double) texture.getHeight() });
+    }
+    else
+    {
+        double oneOverZ = 1.0 / (camera.getPerspective() * -v.xyz.z);
+        v.xyz.x *= oneOverZ;
+        v.xyz.y *= oneOverZ * camera.getAspect();
+        v.xyz.z = oneOverZ;
+        v.rgb.scl(oneOverZ);
+        v.uv.y = 1.0 - v.uv.y;
+        v.uv.mul(Vector2{ (double) texture.getWidth(), (double) texture.getHeight() });
+        v.uv.scl(oneOverZ);
+    }
+	
 	return v;
 }
 
-void Renderer::rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& texture)
+void Renderer::rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& texture, const Camera& camera)
 {
 	auto toScreenSpace = [this, &texture](Vertex& vertex)
 	{
@@ -256,8 +271,25 @@ void Renderer::rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& 
 	double yStartT;
 	LinearInterpolate leftEdge;
 	LinearInterpolate rightEdge;
-
-	auto scanline = [this, &texture](LinearInterpolate& leftEdge, LinearInterpolate& rightEdge, int y)
+    
+    auto depthTransformation = camera.getOrthographic() ? 
+        [](Vertex& v, double& z, Vector3& rgb, Vector2& uv) 
+        {
+            z = v.xyz.z;
+            rgb = v.rgb;
+            uv = v.uv;
+        } :
+        [](Vertex& v, double& z, Vector3& rgb, Vector2& uv) 
+        {
+            z = 1.0 / v.xyz.z;
+            rgb = v.rgb;
+            rgb.scl(z);
+            uv = v.uv;
+            uv.scl(z);
+        };
+    
+	auto scanline = [this, &texture, &depthTransformation]
+        (LinearInterpolate& leftEdge, LinearInterpolate& rightEdge, int y)
 	{
 		Vertex& lv = leftEdge.value;
 		Vertex& rv = rightEdge.value;
@@ -273,11 +305,10 @@ void Renderer::rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& 
 		int depthIndex = pixelIndex >> 2;
 		for (int x = xPixelStart; x <= xPixelEnd; x++)
 		{
-			double z = 1.0 / v.xyz.z;
-			Vector3 rgb = v.rgb;
-			rgb.scl(z);
-			Vector2 uv = v.uv;
-			uv.scl(z);
+			double z;
+			Vector3 rgb;
+			Vector2 uv;
+            depthTransformation(v, z, rgb, uv);
 
 			Color pixel = texture.getPixel((int) uv.x, (int) uv.y);
 			pixel.r *= rgb.x;
