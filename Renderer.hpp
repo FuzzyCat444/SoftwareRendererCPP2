@@ -15,83 +15,83 @@
 class Renderer
 {
 public:
-	Renderer(Raster* image);
+    Renderer(Raster* image);
 
-	void clearColor(Color color);
-	void clearDepth();
-	void clearColorDepth(Color color);
+    void clearColor(Color color);
+    void clearDepth();
+    void clearColorDepth(Color color);
 
-	enum class Lighting
-	{
-	    NONE, DIFFUSE
-	};
+    enum class Lighting
+    {
+        NONE, DIFFUSE
+    };
 
-	void fogPostProcess(double fogStart, double fogEnd, Color fogColor);
+    void fogPostProcess(double fogStart, double fogEnd, Color fogColor);
 
-	void enableDepthTest(bool enable);
+    void enableDepthTest(bool enable);
 
-	void renderMesh(Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting);
+    void renderMesh(Mesh& mesh, const Raster& texture, const Transform& transform, const Camera& camera, const std::vector<LightSource>& lights, Lighting lighting);
 private:
-	Raster* image;
-	std::vector<double> depth;
-	bool depthTestEnabled;
+    Raster* image;
+    std::vector<double> depth;
+    bool depthTestEnabled;
 
-	std::vector<Vertex> verticesCopy;
-	std::vector<bool> renderFace;
+    std::vector<Vertex> verticesCopy;
+    std::vector<bool> renderFace;
 
     bool testDepth(int index, double d)
     {
         if (index < 0 || index >= depth.size())
             return false;
-        if (d < depth.at(index) || !depthTestEnabled)
+        if (d < depth[index] || !depthTestEnabled)
         {
-            depth.at(index) = d;
+            depth[index] = d;
             return true;
         }
         return false;
     }
 
-	enum class ClipPlane
-	{
-		NEAR,
-		LEFT,
-		RIGHT,
-		BOTTOM,
-		TOP,
-		NONE
-	};
-	static ClipPlane nextClipPlane(ClipPlane plane);
+    enum class ClipPlane
+    {
+        NEAR,
+        LEFT,
+        RIGHT,
+        BOTTOM,
+        TOP,
+        NONE
+    };
+    static ClipPlane nextClipPlane(ClipPlane plane);
 
-	struct EdgeClip
-	{
-		enum class ClipResult
-		{
-			REMOVED, CLIPPED, KEPT
-		} result;
-		Vertex v;
-	};
-	EdgeClip clipEdge(Vertex v0, Vertex v1, ClipPlane plane, const Camera& camera) const;
+    struct EdgeClip
+    {
+        enum class ClipResult
+        {
+            REMOVED, CLIPPED, KEPT
+        } result;
+        Vertex v;
+    };
+    EdgeClip clipEdge(Vertex v0, Vertex v1, ClipPlane plane, const Camera& camera) const;
 
-	struct TriangleClip
-	{
-		enum class ClipResult
-		{
-			REMOVED, CLIPPED_ONE, CLIPPED_TWO, KEPT
-		} result;
-		struct
-		{
-			Vertex v0, v1, v2;
-		} t0, t1;
-	};
-	TriangleClip clipTriangle(Vertex v0, Vertex v1, Vertex v2, ClipPlane plane, const Camera& camera) const;
+    struct TriangleClip
+    {
+        enum class ClipResult
+        {
+            REMOVED, CLIPPED_ONE, CLIPPED_TWO, KEPT
+        } result;
+        struct
+        {
+            Vertex v0, v1, v2;
+        } t0, t1;
+    };
+    TriangleClip clipTriangle(Vertex v0, Vertex v1, Vertex v2, ClipPlane plane, const Camera& camera) const;
 
-	void doTriangle(Vertex v0, Vertex v1, Vertex v2, ClipPlane plane, const Raster& texture, const Camera& camera);
+    void doTriangle(Vertex v0, Vertex v1, Vertex v2, ClipPlane plane, const Raster& texture, const Camera& camera);
 
-	Vertex applyPerspective(Vertex v, const Raster& texture, const Camera& camera);
+    Vertex applyPerspective(Vertex v, const Raster& texture, const Camera& camera);
 
-	struct LinearInterpolate
-	{
-		LinearInterpolate() {}
+    struct LinearInterpolate
+    {
+        LinearInterpolate() {}
         LinearInterpolate(Vertex v0, Vertex v1, double startT, double incT)
         {
             Vertex difference;
@@ -128,12 +128,12 @@ private:
             value.uv.add(incValue.uv);
         }
 
-		Vertex value;
-	private:
-		Vertex incValue;
-	};
-
-	void rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& texture, const Camera& camera);
+        Vertex value;
+    private:
+        Vertex incValue;
+    };
+    
+    void rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& texture, const Camera& camera);
 };
 
 #endif

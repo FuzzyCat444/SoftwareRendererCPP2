@@ -32,7 +32,7 @@ void Driver::start()
     image.loadFromFile("bricks.jpg");
     bricksTex.loadFromBuffer(image.getPixelsPtr());
 
-    Camera camera(false, 1.57, width / (double) height, 0.1);
+    Camera camera(false, 1.57, width / (double) height, 0.1, Vector3{ 0.0, 0.0, 5.0 });
 
     std::vector<LightSource> lights;
     lights.push_back(LightSource{ AmbientLight{ Vector3{ 0.4, 0.4, 0.5 } } });

@@ -7,15 +7,15 @@
 
 inline double radians(double degrees)
 {
-	return degrees * 3.141592654 / 180.0;
+    return degrees * 3.141592654 / 180.0;
 }
 
 inline double getT(double a, double b, double c)
 {
-	double den = b - a;
-	if (den == 0.0)
-		return 0.0;
-	return (c - a) / den;
+    double den = b - a;
+    if (den == 0.0)
+        return 0.0;
+    return (c - a) / den;
 }
 
 struct Vector2
@@ -82,7 +82,7 @@ struct Vector2
         return x * other.x + y * other.y;
     }
 
-	double x, y;
+    double x, y;
 };
 
 struct Vector3
@@ -165,14 +165,14 @@ struct Vector3
         );
     }
 
-	double x, y, z;
+    double x, y, z;
 };
 
 class Transform
 {
 public:
-	virtual Vector3 apply(Vector3 v) const = 0;
-	virtual Vector3 applyNormal(Vector3 n) const
+    virtual Vector3 apply(Vector3 v) const = 0;
+    virtual Vector3 applyNormal(Vector3 n) const
     {
         return n;
     }
@@ -193,25 +193,25 @@ public:
     Vector3 apply(Vector3 v) const override
     {
         for (int i = 0; i < chain.size(); i++)
-            v = chain.at(i)->apply(v);
+            v = chain[i]->apply(v);
         return v;
     }
 
     Vector3 applyNormal(Vector3 n) const override
     {
         for (int i = 0; i < chain.size(); i++)
-            n = chain.at(i)->applyNormal(n);
+            n = chain[i]->applyNormal(n);
         return n;
     }
 private:
-	std::vector<const Transform*> chain;
+    std::vector<const Transform*> chain;
 };
 
 class Translate : public Transform
 {
 public:
-	Translate()
-	: Translate{ { 0.0, 0.0, 0.0 } }
+    Translate()
+    : Translate{ { 0.0, 0.0, 0.0 } }
     {
     }
 
@@ -231,14 +231,14 @@ public:
         return n;
     }
 private:
-	Vector3 translation;
+    Vector3 translation;
 };
 
 class Scale : public Transform
 {
 public:
-	Scale()
-	: Scale{ { 1.0, 1.0, 1.0 } }
+    Scale()
+    : Scale{ { 1.0, 1.0, 1.0 } }
     {
     }
 
@@ -260,19 +260,19 @@ public:
         return n;
     }
 private:
-	Vector3 scalars;
-	Vector3 normalScalars;
+    Vector3 scalars;
+    Vector3 normalScalars;
 };
 
 class Rotate : public Transform
 {
 public:
-	enum class Axis
-	{
-		X, Y, Z
-	};
-	Rotate()
-	: Rotate{ Axis::X, 0.0 }
+    enum class Axis
+    {
+        X, Y, Z
+    };
+    Rotate()
+    : Rotate{ Axis::X, 0.0 }
     {
     }
 
@@ -311,9 +311,9 @@ public:
         return apply(n);
     }
 private:
-	Axis axis;
-	double s;
-	double c;
+    Axis axis;
+    double s;
+    double c;
 };
 
 #endif

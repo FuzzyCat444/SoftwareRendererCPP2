@@ -1,8 +1,8 @@
 #include "Camera.hpp"
 
 Camera::Camera(bool orthographic, double fov, double aspect, double nearClip, Vector3 position, double yaw, double pitch, double roll)
-	: fov{ fov }, perspective{ tan(fov / 2.0) }, aspect{ aspect }, nearClip{ nearClip }, position{ position }, yaw{ yaw }, pitch{ pitch }, roll{ roll },
-	combinedTransform{ &positionTransform, &yawTransform, &pitchTransform, &rollTransform }
+    : fov{ fov }, perspective{ tan(fov / 2.0) }, aspect{ aspect }, nearClip{ nearClip }, position{ position }, yaw{ yaw }, pitch{ pitch }, roll{ roll },
+    combinedTransform{ &positionTransform, &yawTransform, &pitchTransform, &rollTransform }
 {
     setOrthographic(orthographic);
     setPosition(position);
@@ -23,38 +23,38 @@ bool Camera::getOrthographic() const
 
 void Camera::setFov(double fov)
 {
-	this->fov = fov;
-	perspective = tan(fov / 2.0);
+    this->fov = fov;
+    perspective = tan(fov / 2.0);
 }
 
 void Camera::setAspect(double aspect)
 {
-	this->aspect = aspect;
+    this->aspect = aspect;
 }
 
 void Camera::setNearClip(double nearClip)
 {
-	this->nearClip = nearClip;
+    this->nearClip = nearClip;
 }
 
 void Camera::setPosition(Vector3 position)
 {
-	this->position = position;
-	position.scl(-1.0);
-	positionTransform = Translate{ position };
+    this->position = position;
+    position.scl(-1.0);
+    positionTransform = Translate{ position };
 }
 
 void Camera::setYaw(double yaw)
 {
-	this->yaw = yaw;
-	yawTransform = Rotate{ Rotate::Axis::Y, -yaw };
+    this->yaw = yaw;
+    yawTransform = Rotate{ Rotate::Axis::Y, -yaw };
 }
 
 void Camera::setPitch(double pitch)
 {
-	this->pitch = pitch;
-	limitPitch();
-	pitchTransform = Rotate{ Rotate::Axis::X, -pitch };
+    this->pitch = pitch;
+    limitPitch();
+    pitchTransform = Rotate{ Rotate::Axis::X, -pitch };
 }
 
 void Camera::setRoll(double roll)
@@ -65,23 +65,23 @@ void Camera::setRoll(double roll)
 
 void Camera::translate(Vector3 translation)
 {
-	position.add(translation);
-	Vector3 pos(position);
-	pos.scl(-1.0);
-	positionTransform = Translate{ pos };
+    position.add(translation);
+    Vector3 pos(position);
+    pos.scl(-1.0);
+    positionTransform = Translate{ pos };
 }
 
 void Camera::rotateYaw(double yaw)
 {
-	this->yaw += yaw;
-	yawTransform = Rotate{ Rotate::Axis::Y, -this->yaw };
+    this->yaw += yaw;
+    yawTransform = Rotate{ Rotate::Axis::Y, -this->yaw };
 }
 
 void Camera::rotatePitch(double pitch)
 {
-	this->pitch += pitch;
-	limitPitch();
-	pitchTransform = Rotate{ Rotate::Axis::X, -this->pitch };
+    this->pitch += pitch;
+    limitPitch();
+    pitchTransform = Rotate{ Rotate::Axis::X, -this->pitch };
 }
 
 void Camera::rotateRoll(double roll)
@@ -92,37 +92,37 @@ void Camera::rotateRoll(double roll)
 
 double Camera::getFov() const
 {
-	return fov;
+    return fov;
 }
 
 double Camera::getPerspective() const
 {
-	return perspective;
+    return perspective;
 }
 
 double Camera::getAspect() const
 {
-	return aspect;
+    return aspect;
 }
 
 double Camera::getNearClip() const
 {
-	return nearClip;
+    return nearClip;
 }
 
 Vector3 Camera::getPosition() const
 {
-	return position;
+    return position;
 }
 
 double Camera::getYaw() const
 {
-	return yaw;
+    return yaw;
 }
 
 double Camera::getPitch() const
 {
-	return pitch;
+    return pitch;
 }
 
 double Camera::getRoll() const
@@ -132,15 +132,15 @@ double Camera::getRoll() const
 
 const Transform& Camera::getTransform() const
 {
-	return combinedTransform;
+    return combinedTransform;
 }
 
 Vector3 Camera::getForwardVec() const
 {
-	Rotate rollTransform{ Rotate::Axis::Z, roll };
-	Rotate pitchTransform{ Rotate::Axis::X, pitch };
-	Rotate yawTransform{ Rotate::Axis::Y, yaw };
-	return yawTransform.apply(pitchTransform.apply(rollTransform.apply(Vector3{ 0.0, 0.0, -1.0 })));
+    Rotate rollTransform{ Rotate::Axis::Z, roll };
+    Rotate pitchTransform{ Rotate::Axis::X, pitch };
+    Rotate yawTransform{ Rotate::Axis::Y, yaw };
+    return yawTransform.apply(pitchTransform.apply(rollTransform.apply(Vector3{ 0.0, 0.0, -1.0 })));
 }
 
 Vector3 Camera::getRightVec() const

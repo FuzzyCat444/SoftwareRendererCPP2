@@ -1,24 +1,24 @@
 #include "Mesh.hpp"
 
 Vertex::Vertex()
-	: Vertex{ {}, {}, {} }
+    : Vertex{ {}, {}, {} }
 {
 }
 
 Vertex::Vertex(Vector3 xyz, Vector3 rgb, Vector2 uv)
-	: Vertex{ xyz, rgb, uv, Vector3{ 0.0, 0.0, 0.0 } }
+    : Vertex{ xyz, rgb, uv, Vector3{ 0.0, 0.0, 0.0 } }
 {
 }
 
 Vertex::Vertex(Vector3 xyz, Vector3 rgb, Vector2 uv, Vector3 normal)
-	:  xyz{ xyz }, rgb{ rgb }, uv{ uv }, normal{ normal }
+    :  xyz{ xyz }, rgb{ rgb }, uv{ uv }, normal{ normal }
 {
 }
 
 Triangle::Triangle() {}
 
 Triangle::Triangle(int v0, int v1, int v2)
-	: v0{ v0 }, v1{ v1 }, v2{ v2 }
+    : v0{ v0 }, v1{ v1 }, v2{ v2 }
 {
 }
 
@@ -46,33 +46,33 @@ Mesh::Mesh() {}
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles, Shading shading)
 {
-	this->vertices = vertices;
-	this->triangles = triangles;
-	computeNormals(shading);
+    this->vertices = vertices;
+    this->triangles = triangles;
+    computeNormals(shading);
 }
 
 void Mesh::invertNormals()
 {
     for (int i = 0; i < vertices.size(); i++)
-        vertices.at(i).normal.scl(-1.0);
+        vertices[i].normal.scl(-1.0);
 
     for (int i = 0; i < faceNormals.size(); i++)
-        faceNormals.at(i).scl(-1.0);
+        faceNormals[i].scl(-1.0);
 }
 
 std::vector<Vertex>& Mesh::getVertices()
 {
-	return vertices;
+    return vertices;
 }
 
 std::vector<Triangle>& Mesh::getTriangles()
 {
-	return triangles;
+    return triangles;
 }
 
 std::vector<Vector3>& Mesh::getFaceNormals()
 {
-	return faceNormals;
+    return faceNormals;
 }
 
 void Mesh::computeNormals(Shading shading)
@@ -80,10 +80,10 @@ void Mesh::computeNormals(Shading shading)
     faceNormals.clear();
     for (int i = 0; i < triangles.size(); i++)
     {
-        Triangle tri = triangles.at(i);
-        Vector3 p0 = vertices.at(tri.v0).xyz;
-        Vector3 p1 = vertices.at(tri.v1).xyz;
-        Vector3 p2 = vertices.at(tri.v2).xyz;
+        Triangle tri = triangles[i];
+        Vector3 p0 = vertices[tri.v0].xyz;
+        Vector3 p1 = vertices[tri.v1].xyz;
+        Vector3 p2 = vertices[tri.v2].xyz;
 
         p1.sub(p0);
         p2.sub(p0);
@@ -92,41 +92,41 @@ void Mesh::computeNormals(Shading shading)
         faceNormals.push_back(normal);
     }
 
-	switch (shading)
-	{
+    switch (shading)
+    {
     case Shading::KEEP_NORMALS:
         for (int i = 0; i < vertices.size(); i++)
-            vertices.at(i).normal.norm();
+            vertices[i].normal.norm();
         break;
-	case Shading::MAKE_FLAT:
-	{
-		std::vector<Vertex> newVertices;
-		std::vector<Triangle> newTriangles;
-		int vIndex = 0;
-		for (int i = 0; i < triangles.size(); i++)
-		{
-			Triangle tri = triangles.at(i);
-			Vertex v0 = vertices.at(tri.v0);
-			Vertex v1 = vertices.at(tri.v1);
-			Vertex v2 = vertices.at(tri.v2);
-			Vector3 normal = faceNormals.at(i);
+    case Shading::MAKE_FLAT:
+    {
+        std::vector<Vertex> newVertices;
+        std::vector<Triangle> newTriangles;
+        int vIndex = 0;
+        for (int i = 0; i < triangles.size(); i++)
+        {
+            Triangle tri = triangles[i];
+            Vertex v0 = vertices[tri.v0];
+            Vertex v1 = vertices[tri.v1];
+            Vertex v2 = vertices[tri.v2];
+            Vector3 normal = faceNormals[i];
 
-			v0.normal = normal;
-			v1.normal = normal;
-			v2.normal = normal;
-			newVertices.push_back(v0);
-			newVertices.push_back(v1);
-			newVertices.push_back(v2);
-			Triangle newTri{ vIndex + 0, vIndex + 1, vIndex + 2 };
-			newTriangles.push_back(newTri);
+            v0.normal = normal;
+            v1.normal = normal;
+            v2.normal = normal;
+            newVertices.push_back(v0);
+            newVertices.push_back(v1);
+            newVertices.push_back(v2);
+            Triangle newTri{ vIndex + 0, vIndex + 1, vIndex + 2 };
+            newTriangles.push_back(newTri);
 
-			vIndex += 3;
-		}
-		vertices = newVertices;
-		triangles = newTriangles;
-		break;
-	}
-	}
+            vIndex += 3;
+        }
+        vertices = newVertices;
+        triangles = newTriangles;
+        break;
+    }
+    }
 }
 
 Mesh Mesh::loadFromFile(std::string objFile, Shading shading)

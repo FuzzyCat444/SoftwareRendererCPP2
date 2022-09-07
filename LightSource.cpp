@@ -6,7 +6,7 @@ PointLight::PointLight()
 }
 
 PointLight::PointLight(Vector3 color, double attenuation, Vector3 position)
-	: color{ color }, attenuation{ attenuation }, position{ position }
+    : color{ color }, attenuation{ attenuation }, position{ position }
 {
 }
 
@@ -15,7 +15,7 @@ DirectionalLight::DirectionalLight()
 }
 
 DirectionalLight::DirectionalLight(Vector3 color, Vector3 direction)
-	: color{ color }, direction{ direction }
+    : color{ color }, direction{ direction }
 {
 }
 
@@ -34,16 +34,16 @@ LightSource::LightSource()
 }
 
 LightSource::LightSource(PointLight point)
-	: type{ LightType::POINT }, point{ point }
+    : type{ LightType::POINT }, point{ point }
 {
 }
 
 LightSource::LightSource(DirectionalLight directional)
-	: type{ LightType::DIRECTIONAL }, directional{ directional }
+    : type{ LightType::DIRECTIONAL }, directional{ directional }
 {
 }
 
 LightSource::LightSource(AmbientLight ambient)
-	: type{ LightType::AMBIENT }, ambient{ ambient }
+    : type{ LightType::AMBIENT }, ambient{ ambient }
 {
 }
