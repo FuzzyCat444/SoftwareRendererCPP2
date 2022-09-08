@@ -229,8 +229,9 @@ Vertex Renderer::applyPerspective(Vertex v, const Raster& texture, const Camera&
 {
     if (camera.getOrthographic())
     {
-        v.xyz.x *= 1.0f / camera.getFov();
-        v.xyz.y *= camera.getAspect() / camera.getFov();
+        float oneOverFov = 1.0 / camera.getFov();
+        v.xyz.x *= oneOverFov;
+        v.xyz.y *= camera.getAspect() * oneOverFov;
         v.xyz.z = -v.xyz.z;
         v.uv.y = 1.0 - v.uv.y;
         v.uv.mul(Vector2{ (double) texture.getWidth(), (double) texture.getHeight() });
@@ -283,23 +284,9 @@ void Renderer::rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& 
     LinearInterpolate leftEdge;
     LinearInterpolate rightEdge;
     
-    auto depthTransformation = camera.getOrthographic() ? 
-        [](Vertex& v, double& z, Vector3& rgb, Vector2& uv) 
-        {
-            z = v.xyz.z;
-            rgb = v.rgb;
-            uv = v.uv;
-        } :
-        [](Vertex& v, double& z, Vector3& rgb, Vector2& uv) 
-        {
-            z = 1.0 / v.xyz.z;
-            rgb = v.rgb;
-            rgb.scl(z);
-            uv = v.uv;
-            uv.scl(z);
-        };
+    bool ortho = camera.getOrthographic();
     
-    auto scanline = [this, &texture, &depthTransformation]
+    auto scanline = [this, &texture, ortho]
         (LinearInterpolate& leftEdge, LinearInterpolate& rightEdge, int y)
     {
         Vertex& lv = leftEdge.value;
@@ -319,7 +306,20 @@ void Renderer::rasterizeTriangle(Vertex v0, Vertex v1, Vertex v2, const Raster& 
             double z;
             Vector3 rgb;
             Vector2 uv;
-            depthTransformation(v, z, rgb, uv);
+            if (ortho)
+            {
+                z = v.xyz.z;
+                rgb = v.rgb;
+                uv = v.uv;
+            }
+            else
+            {
+                z = 1.0 / v.xyz.z;
+                rgb = v.rgb;
+                rgb.scl(z);
+                uv = v.uv;
+                uv.scl(z);
+            }
 
             Color pixel = texture.getPixel((int) uv.x, (int) uv.y);
             pixel.r *= rgb.x;
