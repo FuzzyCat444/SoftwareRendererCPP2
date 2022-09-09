@@ -64,11 +64,11 @@ void Driver::start()
 
         frames++;
         fpsTimer += delta;
-        while (fpsTimer.asSeconds() >= 1.0)
+        while (fpsTimer.asSeconds() >= 1.0) 
         {
-            std::cout << "FPS: " << (int) (frames / fpsTimer.asSeconds()) << std::endl;
+            std::cout << "FPS: " << frames << std::endl;
             frames = 0;
-            fpsTimer = sf::Time::Zero;
+            fpsTimer -= sf::seconds(1.0);
         }
 
         sf::Event event;
