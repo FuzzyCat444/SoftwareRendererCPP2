@@ -25,7 +25,7 @@ void Driver::start()
 
     Renderer renderer{ &raster };
 
-    Mesh bricks = Mesh::loadFromFile("bricks.obj", Mesh::Shading::KEEP_NORMALS);
+    Mesh* bricks = Mesh::loadFromFile("bricks.obj", Mesh::Shading::KEEP_NORMALS);
     Raster bricksTex{ 728, 473 };
 
     sf::Image image;
@@ -172,7 +172,7 @@ void Driver::start()
         renderer.clearColorDepth(Color{ 0, 0, 0, 255 });
 
         Combined c;
-        renderer.renderMesh(bricks, bricksTex, c, camera, lights, Renderer::Lighting::DIFFUSE);
+        renderer.renderMesh(*bricks, bricksTex, c, camera, lights, Renderer::Lighting::DIFFUSE);
 
         texture.update(raster.getData().data());
 
@@ -180,4 +180,6 @@ void Driver::start()
         window.draw(sprite);
         window.display();
     }
+    
+    delete mesh;
 }

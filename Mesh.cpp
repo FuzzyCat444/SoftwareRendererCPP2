@@ -129,7 +129,7 @@ void Mesh::computeNormals(Shading shading)
     }
 }
 
-Mesh Mesh::loadFromFile(std::string objFile, Shading shading)
+Mesh* Mesh::loadFromFile(std::string objFile, Shading shading)
 {
     std::vector<Vector3> v;
     std::vector<Vector2> vt;
@@ -214,10 +214,10 @@ Mesh Mesh::loadFromFile(std::string objFile, Shading shading)
         triangles.push_back(Triangle{ indexMap.at(wi0), indexMap.at(wi1), indexMap.at(wi2) });
     }
 
-    return Mesh{ vertices, triangles, shading };
+    return new Mesh{ vertices, triangles, shading };
 }
 
-Mesh Mesh::generateUVSphere(int rings, int segments, Shading shading)
+Mesh* Mesh::generateUVSphere(int rings, int segments, Shading shading)
 {
     std::vector<Vertex> verts;
     std::vector<Triangle> tris;
@@ -277,5 +277,5 @@ Mesh Mesh::generateUVSphere(int rings, int segments, Shading shading)
         tris.push_back(bottom);
     }
 
-    return Mesh{ verts, tris, shading };
+    return new Mesh{ verts, tris, shading };
 }
