@@ -174,12 +174,12 @@ void Driver::start()
         Combined c;
         renderer.renderMesh(*bricks, bricksTex, c, camera, lights, Renderer::Lighting::DIFFUSE);
 
-        texture.update(raster.getData().data());
+        texture.update(raster.getData());
 
         window.clear(sf::Color::Black);
         window.draw(sprite);
         window.display();
     }
     
-    delete mesh;
+    delete bricks;
 }

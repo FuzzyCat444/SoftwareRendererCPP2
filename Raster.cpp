@@ -11,15 +11,20 @@ Raster::Raster(int width, int height)
 }
 
 Raster::Raster(int width, int height, Color color)
-    : width{ width }, height{ height }
+    : width{ width }, height{ height }, size(width * height * 4)
 {
-    data.resize(4 * width * height);
+    data = new uint8_t[size];
     clear(color);
+}
+
+Raster::~Raster()
+{
+    delete[] data;
 }
 
 void Raster::clear(Color color)
 {
-    for (int i = 0; i < data.size(); i += 4)
+    for (int i = 0; i < size; i += 4)
     {
         data[i + 0] = color.r;
         data[i + 1] = color.g;
@@ -30,7 +35,7 @@ void Raster::clear(Color color)
 
 void Raster::loadFromBuffer(const uint8_t* buffer)
 {
-    for (int i = 0; i < data.size(); i++)
+    for (int i = 0; i < size; i++)
         data[i] = buffer[i];
 }
 
@@ -44,7 +49,12 @@ int Raster::getHeight() const
     return height;
 }
 
-const std::vector<uint8_t>& Raster::getData() const
+const uint8_t* Raster::getData() const
 {
     return data;
+}
+
+int Raster::getSize() const
+{
+    return size;
 }
